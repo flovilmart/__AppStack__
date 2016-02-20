@@ -91,8 +91,6 @@ class ObjectController {
 						var collection = self.db.collection(relationClassName);
 						collection.createIndex({parent:1, key:1, to:1}, {unique: true});
 						subqueries.push(subqueriesOnCollectionForTargetObjects(collection, targetObjects, isRemove));
-
-
 					}
 
 				}else if(value.__type && value.__type == "Date") {
@@ -119,8 +117,6 @@ class ObjectController {
 
 	createObject(object) {
 		var self = this;
-
-		var objectId;
 		//var className = this.className;
 		// TODO: Do not create prefixed classes (_User, _Installation,_Role, _Session)
 		//var collection = this.db.collection(className);
@@ -130,8 +126,7 @@ class ObjectController {
 			var now = new Date();
 			object.updatedAt = now;
 			object.createdAt = now;
-			objectId = utils.generateId();
-			object.objectId = objectId;
+			object.objectId = utils.generateId();
 			
 			return self.beforeSave(object);
 		}).then(function(object){
@@ -139,9 +134,9 @@ class ObjectController {
 		}).then(function(mongoObject){
 			console.log("MAPPED!");
 			var queryController = new QueryController(self.className, self.state);
-			return queryController.insert({objectId: objectId}, mongoObject);
+			return queryController.insert({objectId: object.objectId}, mongoObject);
 		}).then(function(){
-			return Promise.resolve({objectId: objectId, createdAt: object.createdAt });
+			return Promise.resolve({objectId: object.objectId, createdAt: object.createdAt });
 		});
 	}
 	updateObject(objectId, object) {

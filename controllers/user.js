@@ -58,7 +58,6 @@ class UserEndpoint extends ObjectEndpoint {
 			console.log("Creted Session");
 			user.sessionToken = sessionResult.sessionToken;
 			res.send( user );
-
 		}).catch(function(err){
 			console.error(err);
 			res.send(err);
@@ -82,10 +81,15 @@ class UserEndpoint extends ObjectEndpoint {
 
 	GET(req, res) {
 		if (req.params.objectId == "me") {
-			return res.send("ME!");
+			return this.ME(req, res);
 		}
 		super.GET(req, res);
 	}
+
+	ME(req, res) {
+		res.send(req._AppStack.user);
+	}
+
 	app(){
 		if (!this._app) {
 			var express = require('express');
@@ -96,6 +100,7 @@ class UserEndpoint extends ObjectEndpoint {
 			app.get("/login", this.login.bind(this));
 			app.post("/logout", this.logout.bind(this));
 			app.post("/requestPasswordReset", this.requestPasswordReset.bind(this));
+			app.get("/users/me", this.ME.bind(this));
 			app.get("/users/:objectId", this.GET.bind(this));
 			app.put("/users/:objectId", this.PUT.bind(this));
 			app.delete("/users/:objectId", this.DELETE.bind(this));

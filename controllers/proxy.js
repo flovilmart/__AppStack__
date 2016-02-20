@@ -5,8 +5,6 @@ var url = require('url');
 module.exports = function() {
 	var express = require("express");
 	var app = express();
-	
-	
 	app.use(function(req, res, next){
 		if (_.isUndefined(req.body)) {
 			console.log("No body...");

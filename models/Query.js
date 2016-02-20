@@ -1,50 +1,54 @@
-module.exports = Query = function(userId, roles, useMasterKey) {
-	this.userId = userId;
-	this.roles = roles;
-	this.useMasterKey = useMasterKey;
-};
+'use strict';
 
-var createSimpleRuleQuery = function(identifier, rw) {
-	var q = {};
-	q[`ACL.${identifier}.${rw}`] = true;
-	return q;
-};
-
-var createOrRW = function(userId, roles, rw) {
-	var queries = [];
-	queries.push({"ACL": {$exists: false}});
-	queries.push(createSimpleRuleQuery("*", rw));
-	if (userId) {
-		queries.push(createSimpleRuleQuery(userId, rw));
+class Query {
+	constructor(userId, roles, useMasterKey) {
+		this.userId = userId;
+		this.roles = roles;
+		this.useMasterKey = useMasterKey;
 	}
-	for(var i in roles) {
-		queries.push(createSimpleRuleQuery("role:"+roles[i], rw));
+
+	readQuery(originalQuery) {
+		return this.query(originalQuery, "read");
 	}
-	return {$or:queries};
-};
 
-var createReadQuery = function(userId, roles) {
-	return createOrRW(userId, roles, "read");
-};
-
-var createWriteQuery = function(userId, roles) {
-	return createOrRW(userId, roles, "write");
-};
-
-Query.prototype.readQuery = function(originalQuery) {
-	if (this.useMasterKey) {
-		return originalQuery;
+	writeQuery(originalQuery) {
+		return this.query(originalQuery, "write");
 	}
-	var q = createReadQuery(this.userId, this.roles);
-	console.log(JSON.stringify(q));
-	return {$and:[originalQuery, q]};
-};
 
-Query.prototype.writeQuery = function(originalQuery) {
-	if (this.useMasterKey) {
-		return originalQuery;
+	query(originalQuery, rorw) {
+		if (this.useMasterKey) {
+			return originalQuery;
+		}
+		var q = Query.createQuery(this.userId, this.roles, rorw);
+		return {$and:[originalQuery, q]};
 	}
-	var q = createWriteQuery(this.userId, this.roles);
-	console.log(JSON.stringify(q));
-	return {$and:[originalQuery, q]};
-};
+
+	static createSimpleRuleQuery(identifier, rw) {
+		var q = {};
+		q[`ACL.${identifier}.${rw}`] = true;
+		return q;
+	}
+
+	static createQuery(userId, roles, rw) {
+		var queries = [];
+		queries.push({"ACL": {$exists: false}});
+		queries.push(Query.createSimpleRuleQuery("*", rw));
+		if (userId) {
+			queries.push(Query.createSimpleRuleQuery(userId, rw));
+		}
+		queries.concat(roles.map(function(role){
+			return Query.createSimpleRuleQuery(`role:${role}`, rw);
+		}));
+		return {$or:queries};
+	}
+
+	createReadQuery() {
+		return Query.createQuery(this.userId, this.roles, "read");
+	}
+
+	createWriteQuery() {
+		return Query.createQuery(this.userId, this.roles, "write");
+	}
+}
+
+module.exports = Query;

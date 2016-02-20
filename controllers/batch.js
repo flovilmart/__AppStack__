@@ -29,8 +29,6 @@ module.exports = function() {
 
 	app.use(function(req, res){
 		var requests = req.body.requests;
-		console.log("BATCH!", requests);
-
 		var location = req.secure ? "https" : "http";
 		location+="://";
 		location+=req.get("host");

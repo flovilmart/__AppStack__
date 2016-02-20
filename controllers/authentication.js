@@ -9,7 +9,6 @@ var MongoConnect = require("./mongo/connect");
 
 const XParseEmailHeader = "x-parse-email";
 const XParsePasswordHeader = "x-parse-password";
-
 const XParseAppIdHeader = "x-parse-application-id";
 const XParseClientKeyHeader = "x-parse-client-api-key";
 const XParseRESTKeyHeader = "x-parse-rest-api-key";

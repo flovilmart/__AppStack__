@@ -1,0 +1,47 @@
+{
+  "parser": "babel-eslint",
+  "ecmaFeatures": {
+        "blockBindings": true,
+        "forOf": true,
+        "jsx": true
+    },
+  "env": {
+    "node": true, 
+    "browser": true
+  },
+  "rules": {
+    "no-var": 2,
+    "prefer-const": 2,
+    /*"esnext": 2,*/
+    "asi": 0,
+    "boss": 0,
+    "camelcase": 2,
+    "curly": 0,
+    "eqeqeq": 0,
+    "eqnull": 0,
+    "es5": 0,
+    "evil": 0,
+    /*"expr": 2,*/
+    "forin": 0,
+    "funcscope": 0,
+    "immed": 0,
+    "indent": 2,
+    "latedef": 0,
+    "loopfunc": 0,
+    "maxerr": 0,
+    "newcap": 0,
+    "nonew": 0,
+    "plusplus": 0,
+    "quotmark": 0,
+    "regexdash": 0,
+    "shadow": 0,
+    "strict": 0,
+    "sub": 0,
+    "supernew": 0,
+    "trailing": 0,
+    "no-undef": 2, 
+    "no-unused-vars": 2,
+    "white": 0
+  }
+}
+

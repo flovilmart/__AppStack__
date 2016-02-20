@@ -3,20 +3,26 @@
 var utils = require("../../lib/utils");
 var ObjectController = require("./ObjectController");
 var QueriesController = require("./QueriesController");
+var assert = require("assert");
 
 class ObjectEndpoint {
 	constructor(className, objectControllerClass){
-		console.log("CAlled! "+className);
 		this.className = className;
 		this.objectControllerClass = objectControllerClass;
 	}
 
 	updateState(req, res, next){
-		console.dir(req.params);
+
+		if (this.className && req.params.className && this.className != req.params.className) {
+			assert(false, "trying to set classname when already set");
+		}
+
 		if (!this.className) {
 			this.className = req.params.className;
 		}
+
 		this.state = req._AppStack;
+
 		if (this.objectControllerClass) {
 			this.objectController = new this.objectControllerClass(this.state);
 		} else {
@@ -125,7 +131,6 @@ class ObjectEndpoint {
 			let objectIdURL = "/:objectId";
 
 			if (!this.className) {
-				console.log("no classname");
 				rootURL = "/:className";
 				objectIdURL = "/:className/:objectId";
 			}

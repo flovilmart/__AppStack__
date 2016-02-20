@@ -35,24 +35,26 @@ class SessionController extends ObjectController {
 		return ObjectController.prototype.validateObject.call(this, object);
 	}
 	beforeSave(object) {
-		console.log("BS!");
 		object.ACL = {};
 		object.ACL[object.user.objectId] = {"read":true, "write": true};
 		return Promise.resolve(object);
 	}
+
+	load(token) {
+		return SessionController.load(token, this.state);
+	}
+
+	static load(token, state) {
+		var sessionQuery = new QueryController("_Session", state);
+		sessionQuery.useMasterKey = true;
+		return sessionQuery.find({sessionToken:token}).then(function(result){
+			if (result.length != 1) {
+				return Promise.reject({code:"209", error: "invalid session token"});
+			}
+		});
+	}
 }
 
 
-SessionController.load = function(token, state) {
-	// var applicationId = state.applicationId;
-	// var db = state.db[state.applicationId];
-	var sessionQuery = new QueryController("_Session", state);
-	sessionQuery.useMasterKey = true;
-	sessionQuery.find({sessionToken:token}).then(function(result){
-		if (result.length != 1) {
-			return Promise.reject({code:"209", error: "invalid session token"});
-		}
-	});
-};
 
 module.exports = SessionController;

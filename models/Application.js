@@ -23,7 +23,7 @@ Application.create = function()
 	app.restAPIKey = utils.generateAppKeys();
 	app.masterKey = utils.generateAppKeys();
 	return new Promise(function(resolve, reject){
-		app.save(function(err, result){
+		app.save(function(err){
 			if (err) {return reject(err);}
 			return resolve(app);
 		});
